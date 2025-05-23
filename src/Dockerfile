@@ -14,9 +14,9 @@ COPY ./Gemfile ./Gemfile.lock ./
 RUN apt-get update && apt-get install build-essential -y && bundle install
 FROM base AS release
 
-WORKDIR /email_server
+WORKDIR /
 
-COPY ./src/email/ .
+COPY . .
 
 RUN chmod 666 ./Gemfile.lock
 

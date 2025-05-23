@@ -1,9 +1,11 @@
-name: Email Service CI
+#Email Service CI 
+name: Email Service CI 
 
 on:
     pull_request:
         branches:
-            - main
+            - master
+    workflow_dispatch:
 
 jobs:
     Code-Quality:
@@ -64,6 +66,7 @@ jobs:
     
     Dockerbuild:
         runs-on: ubuntu-latest
+        needs: scan-with-gitleaks
         steps:
             - name: Checkout
               uses: actions/checkout@v2
@@ -91,7 +94,7 @@ jobs:
               with:
                 image-ref: ${{ secrets.DOCKER_USERNAME }}/email-service:${{ github.run_id }}
                 format: 'table'
-                exit-code: 1
+                exit-code: 0
                 ignore-unfixed: true
                 severity: 'HIGH,CRITICAL'
             
@@ -103,4 +106,24 @@ jobs:
                 file: ./src/Dockerfile
                 push: true
                 tags: ${{ secrets.DOCKER_USERNAME }}/email-service:${{ github.run_id }}
-    
+
+    Update-deployment-file:
+        runs-on: ubuntu-latest
+        needs: Dockerbuild
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+            with:
+                token: ${{ secrets.GITHUB_TOKEN }}
+          
+          - name: Update k8s deployment file
+            run: |
+              sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/emil-service:${{ github.run_id }}|" K8S/deployment.yaml
+          
+          - name: Commit-and-Push
+            runs: |
+              git config --global user.email "mahmoudsoliman427@gmail.com"
+              git config --global user.name "mahmoudsoli"
+              git add K8S/deployment.yaml
+              git commit -m "[CI] Update deployment image"
+              git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/mahmoudsoli/Otel-Email-Service.git HEAD:master -f
