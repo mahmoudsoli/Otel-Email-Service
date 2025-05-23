@@ -30,7 +30,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: email
-          image: 'ghcr.io/open-telemetry/demo:2.0.2-email'
+          image: msoliman427/emil-service:15220943830
           imagePullPolicy: IfNotPresent
           ports:
             
