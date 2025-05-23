@@ -121,7 +121,7 @@ jobs:
               sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/emil-service:${{ github.run_id }}|" K8S/deployment.yaml
           
           - name: Commit-and-Push
-            runs: |
+            run: |
               git config --global user.email "mahmoudsoliman427@gmail.com"
               git config --global user.name "mahmoudsoli"
               git add K8S/deployment.yaml
