@@ -3,7 +3,7 @@ name: Email Service CI
 on:
     pull_request:
         branches:
-            - main
+            - master
 
 jobs:
     Code-Quality:
