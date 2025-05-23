@@ -16,7 +16,7 @@ FROM base AS release
 
 WORKDIR /
 
-COPY ./src/ .
+COPY . .
 
 RUN chmod 666 ./Gemfile.lock
 
