@@ -16,7 +16,7 @@ FROM base AS release
 
 WORKDIR /email_server
 
-COPY ./src/ .
+COPY src/ .
 
 RUN chmod 666 ./Gemfile.lock
 
